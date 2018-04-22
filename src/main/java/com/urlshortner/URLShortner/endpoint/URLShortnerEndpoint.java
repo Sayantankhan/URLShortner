@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +29,7 @@ public class URLShortnerEndpoint {
 	private URLShortnerService urlShortnerService;
 	
 	@GetMapping(path="/{shortUrl}")
+	@CrossOrigin
 	public void fetchUrl(@PathVariable("shortUrl") String shortURL,HttpServletResponse response) {
 		logger.info("Given URL :: "+shortURL);
 		String live_url = urlShortnerService.getUrlfromShorter(shortURL);
@@ -35,10 +37,4 @@ public class URLShortnerEndpoint {
 		response.addHeader("location", live_url);
 	}
 	
-	@GetMapping(path="/inactive_list",produces="application/json")
-	public ResponseEntity<?> getInactiveList() {
-		URLShortnerInActiveResponseBean inactiveURLs = new URLShortnerInActiveResponseBean();
-		inactiveURLs.setShortUrllist(urlShortnerService.getInactiveList());
-		return new ResponseEntity<URLShortnerInActiveResponseBean>(inactiveURLs,HttpStatus.OK);
-	}
 }
